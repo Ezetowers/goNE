@@ -1,0 +1,22 @@
+# This is a TOML document
+
+[main]
+# List of divisor to be used in DivisibleNumber
+NetIface = "enp9s0"
+
+[log]
+# 
+File = "/tmp/log.txt"
+# const (
+#     CRITICAL Level = iota
+#     ERROR
+#     WARNING
+#     NOTICE
+#     INFO
+#     DEBUG
+# )
+Level = 5
+# Example format string. Everything except the message has a custom color
+# which is dependent on the log level. Many fields have a custom output
+# formatting too, eg. the time returns the hour down to the milli second.
+Formatter = "%{color}[%{time:15:04:05.000} %{shortfunc} ▶ %{level:.8s} %{id:03x}%{color:reset}] %{message}"

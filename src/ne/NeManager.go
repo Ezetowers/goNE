@@ -1,0 +1,47 @@
+package ne
+
+import (
+	"github.com/op/go-logging"
+	"ne/receiver"
+	"sync"
+)
+
+var Log = logging.MustGetLogger("")
+
+type NeManager struct {
+	sniffer    *receiver.Sniffer
+	dispatcher *receiver.Dispatcher
+	waitGroup  *sync.WaitGroup
+}
+
+// Constructor
+func NewNeManager(netIface string) *NeManager {
+	aWaitGroup := new(sync.WaitGroup)
+
+	aNeManager := &NeManager{
+		receiver.NewSniffer(netIface, aWaitGroup),
+		receiver.NewDispatcher(aWaitGroup),
+		aWaitGroup,
+	}
+
+	return aNeManager
+}
+
+func (neManager *NeManager) Start() {
+	// Start every NE process as a goroutine and add them to the wait group
+	neManager.waitGroup.Add(2)
+
+	Log.Noticef("[NE_MANAGER] Starting NeManager event loop")
+	go neManager.sniffer.Run()
+	go neManager.dispatcher.Run()
+	Log.Noticef("[SNIFFER] Ending Sniffing loop")
+
+	neManager.waitGroup.Wait()
+	Log.Noticef("[NE_MANAGER] Program stopped. Manager goroutines ended succesfully. ")
+}
+
+func (neManager *NeManager) Stop() {
+	Log.Noticef("[NE_MANAGER] Stopping NeManager event loop. Wait goroutines to finish")
+	neManager.sniffer.Finish()
+	neManager.dispatcher.Finish()
+}
