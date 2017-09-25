@@ -1,6 +1,7 @@
 package ne
 
 import (
+	"github.com/google/gopacket"
 	"github.com/op/go-logging"
 	"ne/receiver"
 	"sync"
@@ -18,9 +19,12 @@ type NeManager struct {
 func NewNeManager(netIface string) *NeManager {
 	aWaitGroup := new(sync.WaitGroup)
 
+	// Channel used to pass packets from the Sniffer to the Dispatcher
+	packetChan := make(chan gopacket.Packet)
+
 	aNeManager := &NeManager{
-		receiver.NewSniffer(netIface, aWaitGroup),
-		receiver.NewDispatcher(aWaitGroup),
+		receiver.NewSniffer(netIface, aWaitGroup, packetChan),
+		receiver.NewDispatcher(aWaitGroup, packetChan),
 		aWaitGroup,
 	}
 

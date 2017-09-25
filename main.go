@@ -25,7 +25,7 @@ var Log = logging.MustGetLogger("")
 func initEnvironment() {
 	common.InitConfig(&MyConfig)
 	common.InitLogger(&MyConfig.BasicConfig)
-	Log.Noticef("Environment correctly set. Starting %v program.\n",
+	Log.Noticef("[MAIN] Environment correctly set. Starting %v program.\n",
 		os.Args[0])
 }
 
@@ -41,6 +41,7 @@ func handleSigintSignal(neManager *ne.NeManager) {
 	signal.Notify(c, os.Interrupt)
 
 	go func() {
+		// Block until we receive the SIGINT signal
 		<-c
 		Log.Noticef("[MAIN] SIGINT received. Proceed to finish program")
 		neManager.Stop()

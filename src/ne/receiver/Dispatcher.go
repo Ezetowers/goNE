@@ -1,20 +1,24 @@
 package receiver
 
 import (
+	"github.com/google/gopacket"
 	"sync"
 	"sync/atomic"
-	"time"
 )
 
 type Dispatcher struct {
-	waitGroup *sync.WaitGroup
-	finished  uint32
+	waitGroup  *sync.WaitGroup
+	packetChan chan gopacket.Packet
+	finished   uint32
 }
 
 // Constructor
-func NewDispatcher(waitGroup *sync.WaitGroup) *Dispatcher {
+func NewDispatcher(waitGroup *sync.WaitGroup,
+	packetChan chan gopacket.Packet) *Dispatcher {
+
 	aDispatcher := &Dispatcher{
 		waitGroup,
+		packetChan,
 		0,
 	}
 
@@ -25,7 +29,16 @@ func (dispatcher *Dispatcher) Run() {
 	Log.Noticef("[DISPATCHER] Starting Dispatching loop")
 
 	for dispatcher.finished == 0 {
-		time.Sleep(time.Second)
+		if packet, ok := <-dispatcher.packetChan; ok == true {
+			Log.Debugf("[DISPATCHER] Packet received. Proceed to process it")
+			// Iterate over all layers, printing out each layer type
+			for _, layer := range packet.Layers() {
+				Log.Debugf("[SNIFFER] PACKET LAYER:", layer.LayerType())
+			}
+		} else {
+			Log.Noticef("[DISPATCHER] PacketChan has been closed. ")
+			break
+		}
 	}
 
 	Log.Noticef("[DISPATCHER] Ending Dispatching loop")
