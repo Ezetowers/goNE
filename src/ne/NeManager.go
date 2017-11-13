@@ -49,3 +49,11 @@ func (neManager *NeManager) Stop() {
 	neManager.sniffer.Finish()
 	neManager.dispatcher.Finish()
 }
+
+func (neManager *NeManager) AddPacketMatcher(packetMatcher *receiver.PacketMatcher) error {
+	return neManager.dispatcher.AddPacketMatcher(packetMatcher)
+}
+
+func (neManager *NeManager) RemovePacketMatcher(packetMatcher *receiver.PacketMatcher) error {
+	return neManager.dispatcher.RemovePacketMatcher(packetMatcher)
+}

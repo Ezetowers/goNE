@@ -7,19 +7,26 @@ import (
 )
 
 type Dispatcher struct {
-	waitGroup  *sync.WaitGroup
-	packetChan chan gopacket.Packet
-	finished   uint32
+	waitGroup      *sync.WaitGroup
+	packetChan     chan gopacket.Packet
+	finished       uint32
+	pmLogic        SimplePacketMatchingLogic
+	processingLock *sync.Mutex
 }
 
 // Constructor
 func NewDispatcher(waitGroup *sync.WaitGroup,
 	packetChan chan gopacket.Packet) *Dispatcher {
+	processingLock := new(sync.Mutex)
 
 	aDispatcher := &Dispatcher{
 		waitGroup,
 		packetChan,
 		0,
+		SimplePacketMatchingLogic{
+			[]PacketMatcher{},
+		},
+		processingLock,
 	}
 
 	return aDispatcher
@@ -47,4 +54,20 @@ func (dispatcher *Dispatcher) Run() {
 
 func (dispatcher *Dispatcher) Finish() {
 	atomic.StoreUint32(&dispatcher.finished, 1)
+}
+
+func (dispatcher *Dispatcher) AddPacketMatcher(pm *PacketMatcher) error {
+	dispatcher.processingLock.Lock()
+	defer dispatcher.processingLock.Unlock()
+	response := dispatcher.pmLogic.AddPacketMatcher(pm)
+	dispatcher.pmLogic.Dump()
+	return response
+}
+
+func (dispatcher *Dispatcher) RemovePacketMatcher(pm *PacketMatcher) error {
+	dispatcher.processingLock.Lock()
+	defer dispatcher.processingLock.Unlock()
+	response := dispatcher.pmLogic.RemovePacketMatcher(pm)
+	dispatcher.pmLogic.Dump()
+	return response
 }

@@ -4,6 +4,9 @@ import (
 	"common"
 	"github.com/op/go-logging"
 	"ne"
+	"ne/processing"
+	"ne/receiver"
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
@@ -31,7 +34,36 @@ func initEnvironment() {
 
 func main() {
 	initEnvironment()
+
+	dstSubnet := net.IPNet{
+		net.ParseIP("192.168.1.0"),
+		net.CIDRMask(24, 32),
+	}
+
+	srcSubnet := net.IPNet{
+		net.ParseIP("10.0.0.0"),
+		net.CIDRMask(8, 32),
+	}
+
+	neTask := processing.NewTask()
+	pm := receiver.NewPacketMatcher(&dstSubnet, &srcSubnet, 0, neTask)
+
 	neManager := ne.NewNeManager(MyConfig.Main.NetIface)
+	neManager.AddPacketMatcher(pm)
+
+	dstSubnet = net.IPNet{
+		net.ParseIP("192.168.1.0"),
+		net.CIDRMask(22, 32),
+	}
+
+	srcSubnet = net.IPNet{
+		net.ParseIP("10.0.0.0"),
+		net.CIDRMask(13, 32),
+	}
+
+	pm = receiver.NewPacketMatcher(&dstSubnet, &srcSubnet, 0, neTask)
+	neManager.AddPacketMatcher(pm)
+
 	handleSigintSignal(neManager)
 	neManager.Start()
 }

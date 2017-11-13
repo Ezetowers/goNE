@@ -2,7 +2,7 @@
 
 [main]
 # List of divisor to be used in DivisibleNumber
-NetIface = "enp9s0"
+NetIface = "wlp7s0"
 
 [log]
 # 
@@ -15,7 +15,7 @@ File = "/tmp/log.txt"
 #     INFO
 #     DEBUG
 # )
-Level = 5
+Level = 6
 # Example format string. Everything except the message has a custom color
 # which is dependent on the log level. Many fields have a custom output
 # formatting too, eg. the time returns the hour down to the milli second.
