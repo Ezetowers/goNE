@@ -2,12 +2,9 @@ package ne
 
 import (
 	"github.com/google/gopacket"
-	"github.com/op/go-logging"
 	"ne/receiver"
 	"sync"
 )
-
-var Log = logging.MustGetLogger("")
 
 type NeManager struct {
 	sniffer    *receiver.Sniffer

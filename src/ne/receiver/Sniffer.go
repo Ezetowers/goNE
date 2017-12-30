@@ -3,12 +3,9 @@ package receiver
 import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
-	"github.com/op/go-logging"
 	"sync"
 	"sync/atomic"
 )
-
-var Log = logging.MustGetLogger("")
 
 type Sniffer struct {
 	netIface      string

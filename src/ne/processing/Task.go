@@ -2,10 +2,7 @@ package processing
 
 import (
 	"github.com/google/gopacket"
-	"github.com/op/go-logging"
 )
-
-var Log = logging.MustGetLogger("")
 
 type ITask interface {
 	HandleInput()
