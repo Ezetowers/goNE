@@ -43,16 +43,7 @@ func (self *IPAddress) raw() net.IP {
  * @return     String representing the IPAddress
  */
 func (self *IPAddress) String() string {
-	if len(self.ip) == IPV4_SIZE {
-		return fmt.Sprintf("%d.%d.%d.%d",
-			self.ip[0],
-			self.ip[1],
-			self.ip[2],
-			self.ip[3])
-	} else {
-		// TODO:
-		return ""
-	}
+	return fmt.Sprintf("%v", self.ip)
 }
 
 /**

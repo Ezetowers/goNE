@@ -4,12 +4,14 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"golang.org/x/net/ipv4"
+	"golang.org/x/net/ipv6"
 	"ne/net"
 	"sync"
 	"sync/atomic"
 )
 
-type IPAddrProcessing func(packet gopacket.Packet, data *IPv4HeaderInfo) error
+type IPAddrProcessing func(packet gopacket.Packet, data *IPHeaderInfo) error
+type TransportHeaderProcessing func(packet gopacket.Packet, data *TransportHeaderInfo) error
 
 type Dispatcher struct {
 	waitGroup      *sync.WaitGroup
@@ -18,12 +20,17 @@ type Dispatcher struct {
 	pmLogic        SimplePacketMatchingLogic
 	processingLock *sync.Mutex
 	ipMap          map[uint16]IPAddrProcessing
+	transportMap   map[int]TransportHeaderProcessing
 }
 
-type IPv4HeaderInfo struct {
+type IPHeaderInfo struct {
 	srcAddr  net.IPAddress
 	dstAddr  net.IPAddress
 	protocol int
+}
+
+type TransportHeaderInfo struct {
+	port uint16
 }
 
 // Constructor
@@ -40,11 +47,15 @@ func NewDispatcher(waitGroup *sync.WaitGroup,
 		},
 		processingLock,
 		make(map[uint16]IPAddrProcessing),
+		make(map[int]TransportHeaderProcessing),
 	}
 
-	// Fill the ipMap with the callbacks
+	// Fill the ipMap with the proper callbacks
 	aDispatcher.ipMap[net.ETHERTYPE_IP] = aDispatcher.processIPv4Packet
 	aDispatcher.ipMap[net.ETHERTYPE_IPV6] = aDispatcher.processIPv6Packet
+
+	// Fill the transportMap with the proper
+	aDispatcher.transportMap[net.IPPROTO_UDP] = aDispatcher.processUDPHeader
 
 	return aDispatcher
 }
@@ -87,19 +98,24 @@ func (self *Dispatcher) processPacket(packet gopacket.Packet) {
 		Log.Debugf("[DISPATCHER] %v", ethHeader)
 
 		// Process the Network Layer packet
-		var ipHeaderInfo IPv4HeaderInfo
+		var ipHeaderInfo IPHeaderInfo
 		if err := self.ipMap[ethHeader.Hproto](packet, &ipHeaderInfo); err != nil {
 			Log.Errorf("[DISPATCHER] Packet IPv4 Header could not be parsed. Error: %v", err)
 			return
 		}
 
-		Log.Debugf("[DISPATCHER] IP header info. SrcAddr: %v - DstAddr: %v - TransportProtocol: %v",
-			ipHeaderInfo.srcAddr.String(),
-			ipHeaderInfo.dstAddr.String(),
-			ipHeaderInfo.protocol)
-
 		// FIXME: For the moment we'll only process UDP packets
 		if ipHeaderInfo.protocol == net.IPPROTO_UDP {
+			Log.Debugf("[DISPATCHER] IP header info. SrcAddr: %v - DstAddr: %v - TransportProtocol: %v",
+				ipHeaderInfo.srcAddr.String(),
+				ipHeaderInfo.dstAddr.String(),
+				ipHeaderInfo.protocol)
+
+			var headerInfo TransportHeaderInfo
+			if err := self.transportMap[ipHeaderInfo.protocol](packet, &headerInfo); err != nil {
+				Log.Errorf("[DISPATCHER] Packet Transport Header could not be parsed. Error: %v", err)
+				return
+			}
 
 		}
 
@@ -115,7 +131,7 @@ func (self *Dispatcher) processPacket(packet gopacket.Packet) {
  * @return     nil if the IPv4 header data could be retrieved from the packet
  */
 func (self *Dispatcher) processIPv4Packet(packet gopacket.Packet,
-	data *IPv4HeaderInfo) error {
+	data *IPHeaderInfo) error {
 
 	ipv4Header, err := ipv4.ParseHeader(packet.Layer(layers.LayerTypeIPv4).LayerContents())
 	if err != nil {
@@ -137,9 +153,30 @@ func (self *Dispatcher) processIPv4Packet(packet gopacket.Packet,
  * @return     nil if the IPv4 header data could be retrieved from the packet
  */
 func (self *Dispatcher) processIPv6Packet(packet gopacket.Packet,
-	data *IPv4HeaderInfo) error {
+	data *IPHeaderInfo) error {
 
-	Log.Debugf("[DISPATCHER] Processing IPv6 Packet")
+	ipv6Header, err := ipv6.ParseHeader(packet.Layer(layers.LayerTypeIPv6).LayerContents())
+	if err != nil {
+		return err
+	}
+
+	data.srcAddr = *net.NewIPAddress(ipv6Header.Src)
+	data.dstAddr = *net.NewIPAddress(ipv6Header.Dst)
+	data.protocol = ipv6Header.NextHeader
+
+	return nil
+}
+
+/**
+ * @brief      { function_description }
+ *
+ * @return     { description_of_the_return_value }
+ */
+func (self *Dispatcher) processUDPHeader(packet gopacket.Packet,
+	data *TransportHeaderInfo) error {
+
+	udpHeader := packet.Layer(layers.LayerTypeUDP).LayerContents()
+	Log.Debugf("[DISPATCHER] Processing UDP Packet: %v", udpHeader)
 	return nil
 }
 

@@ -10,11 +10,10 @@ const ETHERTYPE_IPV6 uint16 = 0x86dd
 const ETHERTYPE_ARP uint16 = 0x806
 
 // IPv4 Header constants
+const IPPROTO_TCP int = 6
 const IPPROTO_UDP int = 17
-const IPPROTO_TCP int = 17
 const IPPROTO_ICMP int = 1
-
-// const IPPROTO_ICMPv6 int = ??
+const IPPROTO_ICMPv6 int = 58
 
 var Log *logging.Logger
 
