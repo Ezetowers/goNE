@@ -1,9 +1,10 @@
 # This is a TOML document
 
 [main]
-# List of divisor to be used in DivisibleNumber
+# Interface where the simulator will send and receive packets
 NetIface = "enp0s25"
-# NetIface = "wlp3s0"
+# Amounts of workers used to process tasks
+WorkersCount = 10
 
 [log]
 # 

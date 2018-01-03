@@ -1,4 +1,4 @@
-package net
+package network
 
 import (
 	"encoding/binary"
@@ -33,14 +33,21 @@ func (self *EthHeader) String() string {
 		self.Hproto)
 }
 
-// IPv4
-// type IPv4Header struct {
-// }
+// UDP
+type UdpHeader struct {
+	srcPort  uint16
+	dstPort  uint16
+	length   uint16
+	checksum uint16
+}
 
-// func newIPv4Header(data []byte, protocol uint16) {
+/*func NewUdpHeader(data []byte) *UdpHeader {
+	aUdpHeader := &UdpHeader{
+		binary.BigEndian.Uint16(data[0:4]),
+		binary.BigEndian.Uint16(data[4:8]),
+		binary.BigEndian.Uint16(data[8:12]),
+		binary.BigEndian.Uint16(data[12:16]),
+	}
 
-// }
-
-// func (self *IPv4Header) String() string {
-
-// }
+	return aUdpHeader
+}*/

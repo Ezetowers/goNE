@@ -1,4 +1,4 @@
-package net
+package network
 
 import (
 	"errors"
@@ -35,8 +35,8 @@ func NewIPAddress(data []byte) *IPAddress {
 /**
  * @return     Return the IP as a stream of bytes
  */
-func (self *IPAddress) raw() net.IP {
-	return self.ip
+func (self *IPAddress) Raw() *net.IP {
+	return &self.ip
 }
 
 /**

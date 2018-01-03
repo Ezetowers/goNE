@@ -10,7 +10,7 @@ type PacketMatcher struct {
 	// Range of addresses valid as destination address
 	dstSubnet net.IPNet
 	srcSubnet net.IPNet
-	dstPort   uint32
+	dstPort   uint16
 	Task      processing.ITask
 }
 
@@ -26,7 +26,7 @@ type PacketMatcher struct {
 
 func NewPacketMatcher(dstSubnet *net.IPNet,
 	srcSubnet *net.IPNet,
-	dstPort uint32,
+	dstPort uint16,
 	task processing.ITask) *PacketMatcher {
 	return &PacketMatcher{
 		*dstSubnet,
@@ -38,7 +38,7 @@ func NewPacketMatcher(dstSubnet *net.IPNet,
 
 func (p *PacketMatcher) MatchOnlySrc(srcAddress *net.IP,
 	dstAddress *net.IP,
-	dstPort uint32) bool {
+	dstPort uint16) bool {
 
 	return p.dstPort == dstPort &&
 		p.srcSubnet.Contains(*srcAddress) &&
@@ -46,7 +46,7 @@ func (p *PacketMatcher) MatchOnlySrc(srcAddress *net.IP,
 
 }
 
-func (p *PacketMatcher) MatchSrcAndPort(srcAddress *net.IP, dstPort uint32) bool {
+func (p *PacketMatcher) MatchSrcAndPort(srcAddress *net.IP, dstPort uint16) bool {
 	return p.dstPort == dstPort && p.srcSubnet.Contains(*srcAddress)
 }
 

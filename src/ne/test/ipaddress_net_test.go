@@ -1,7 +1,7 @@
 package net_test
 
 import (
-	"ne/net"
+	"ne/network"
 	"reflect"
 	"strings"
 	"testing"
@@ -9,7 +9,7 @@ import (
 
 func TestValidIPAddress(t *testing.T) {
 	data := []byte{1, 2, 3, 4}
-	ipAddr := net.NewIPAddress(data)
+	ipAddr := network.NewIPAddress(data)
 
 	if ipAddr == nil {
 		t.Error("Expected a valid IPAddress. Got nil")
@@ -18,7 +18,7 @@ func TestValidIPAddress(t *testing.T) {
 
 func TestInvalidIPAddressNotEnoughData(t *testing.T) {
 	data := []byte{0, 0, 0, 0, 0}
-	ipAddr := net.NewIPAddress(data)
+	ipAddr := network.NewIPAddress(data)
 
 	if ipAddr != nil {
 		t.Error("Expected a invalid IPAddress. Got something different than nil")
@@ -27,7 +27,7 @@ func TestInvalidIPAddressNotEnoughData(t *testing.T) {
 
 func TestValidIPAddressStringRepresentation(t *testing.T) {
 	data := []byte{1, 2, 3, 4}
-	ipAddr := net.NewIPAddress(data)
+	ipAddr := network.NewIPAddress(data)
 
 	expected := "1.2.3.4"
 	actual := ipAddr.String()
@@ -38,7 +38,7 @@ func TestValidIPAddressStringRepresentation(t *testing.T) {
 
 func TestIPAddressIncreaseNonBorderCase(t *testing.T) {
 	data := []byte{192, 168, 0, 254}
-	ipAddr := net.NewIPAddress(data)
+	ipAddr := network.NewIPAddress(data)
 	result := ipAddr.Increase()
 
 	expected := "192.168.0.255"
@@ -50,7 +50,7 @@ func TestIPAddressIncreaseNonBorderCase(t *testing.T) {
 
 func TestIPAddressIncreaseBorderCase(t *testing.T) {
 	data := []byte{191, 255, 255, 255}
-	ipAddr := net.NewIPAddress(data)
+	ipAddr := network.NewIPAddress(data)
 	result := ipAddr.Increase()
 
 	expected := "192.0.0.0"
@@ -62,7 +62,7 @@ func TestIPAddressIncreaseBorderCase(t *testing.T) {
 
 func TestIncreaseMaxIPAddress(t *testing.T) {
 	data := []byte{255, 255, 255, 255}
-	ipAddr := net.NewIPAddress(data)
+	ipAddr := network.NewIPAddress(data)
 	result := ipAddr.Increase()
 
 	expected := "255.255.255.255"
@@ -73,8 +73,8 @@ func TestIncreaseMaxIPAddress(t *testing.T) {
 }
 
 func TestCompareIPAddressCaseEqual(t *testing.T) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 2, 3, 4})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr1 := network.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 3, 4})
 
 	if ret, _ := ipAddr1.Compare(ipAddr2); ret != 0 {
 		t.Errorf("IPAddresses are not equal!!. Actual: %v - Expected: %v", ipAddr1, ipAddr2)
@@ -82,8 +82,8 @@ func TestCompareIPAddressCaseEqual(t *testing.T) {
 }
 
 func TestCompareIPAddressCaseGreater(t *testing.T) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 3, 3, 2})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr1 := network.NewIPAddress([]byte{1, 3, 3, 2})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 3, 4})
 
 	if ret, _ := ipAddr1.Compare(ipAddr2); ret == 0 {
 		t.Errorf("IPAddresses are not equal!!. Actual: %v - Expected: %v", ipAddr1, ipAddr2)
@@ -91,8 +91,8 @@ func TestCompareIPAddressCaseGreater(t *testing.T) {
 }
 
 func TestCompareIPAddressCaseLesser(t *testing.T) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 2, 2, 2})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 4, 1})
+	ipAddr1 := network.NewIPAddress([]byte{1, 2, 2, 2})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 4, 1})
 
 	if ret, _ := ipAddr1.Compare(ipAddr2); ret == 0 {
 		t.Errorf("IPAddresses are not equal!!. Actual: %v - Expected: %v", ipAddr1, ipAddr2)
@@ -100,8 +100,8 @@ func TestCompareIPAddressCaseLesser(t *testing.T) {
 }
 
 func BenchmarkTestCompareIPAddressCaseEqual(b *testing.B) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 2, 3, 4})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr1 := network.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 3, 4})
 
 	for i := 0; i < b.N; i++ {
 		ipAddr1.Compare(ipAddr2)
@@ -109,8 +109,8 @@ func BenchmarkTestCompareIPAddressCaseEqual(b *testing.B) {
 }
 
 func BenchmarkDeepEqualIPAddressCaseEqual(b *testing.B) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 2, 3, 4})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr1 := network.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 3, 4})
 
 	for i := 0; i < b.N; i++ {
 		reflect.DeepEqual(ipAddr1, ipAddr2)
@@ -118,8 +118,8 @@ func BenchmarkDeepEqualIPAddressCaseEqual(b *testing.B) {
 }
 
 func BenchmarkTestCompareIPAddressCaseNotEqual(b *testing.B) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 2, 3, 5})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr1 := network.NewIPAddress([]byte{1, 2, 3, 5})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 3, 4})
 
 	for i := 0; i < b.N; i++ {
 		ipAddr1.Compare(ipAddr2)
@@ -127,8 +127,8 @@ func BenchmarkTestCompareIPAddressCaseNotEqual(b *testing.B) {
 }
 
 func BenchmarkDeepEqualIPAddressCaseNotEqual(b *testing.B) {
-	ipAddr1 := net.NewIPAddress([]byte{1, 2, 3, 5})
-	ipAddr2 := net.NewIPAddress([]byte{1, 2, 3, 4})
+	ipAddr1 := network.NewIPAddress([]byte{1, 2, 3, 5})
+	ipAddr2 := network.NewIPAddress([]byte{1, 2, 3, 4})
 
 	for i := 0; i < b.N; i++ {
 		reflect.DeepEqual(ipAddr1, ipAddr2)
