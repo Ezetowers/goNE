@@ -2,8 +2,9 @@ package receiver
 
 import (
 	"fmt"
-	"ne/processing"
 	"net"
+
+	"github.com/Ezetowers/goNE/processing"
 )
 
 type PacketMatcher struct {

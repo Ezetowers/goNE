@@ -1,15 +1,16 @@
 package main
 
 import (
-	"common"
-	"github.com/op/go-logging"
-	"ne"
-	"ne/processing"
-	"ne/receiver"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/ezetowers/goNE/common"
+	"github.com/ezetowers/goNE/ne"
+	"github.com/ezetowers/goNE/processing"
+	"github.com/ezetowers/goNE/receiver"
+	"github.com/op/go-logging"
 )
 
 // Config Init

@@ -1,10 +1,11 @@
 package receiver
 
 import (
-	"github.com/google/gopacket"
-	"github.com/google/gopacket/pcap"
 	"sync"
 	"sync/atomic"
+
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/pcap"
 )
 
 type Sniffer struct {

@@ -2,9 +2,10 @@ package common
 
 import (
 	"fmt"
-	"github.com/op/go-logging"
 	"io/ioutil"
 	"os"
+
+	"github.com/op/go-logging"
 )
 
 func InitLogger(config *BasicConfig) {

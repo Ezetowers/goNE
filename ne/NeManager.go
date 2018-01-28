@@ -1,10 +1,11 @@
 package ne
 
 import (
-	"github.com/google/gopacket"
-	"ne/processing"
-	"ne/receiver"
 	"sync"
+
+	"github.com/Ezetowers/goNE/processing"
+	"github.com/Ezetowers/goNE/receiver"
+	"github.com/google/gopacket"
 )
 
 type NeManager struct {

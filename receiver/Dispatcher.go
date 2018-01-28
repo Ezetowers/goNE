@@ -2,14 +2,15 @@ package receiver
 
 import (
 	"encoding/binary"
-	"github.com/google/gopacket"
-	"github.com/google/gopacket/layers"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
-	"ne/network"
-	"ne/processing"
 	"sync"
 	"sync/atomic"
+
+	"github.com/Ezetowers/goNE/network"
+	"github.com/Ezetowers/goNE/processing"
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
 )
 
 type IPAddrProcessing func(packet gopacket.Packet, data *IPHeaderInfo) error

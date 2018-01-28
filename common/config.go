@@ -3,9 +3,10 @@ package common
 import (
 	"bytes"
 	"fmt"
+	"os"
+
 	"github.com/BurntSushi/toml"
 	"github.com/op/go-logging"
-	"os"
 )
 
 type logSection struct {

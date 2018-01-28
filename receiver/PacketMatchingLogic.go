@@ -1,9 +1,10 @@
 package receiver
 
 import (
-	"ne/processing"
 	"net"
 	"sort"
+
+	"github.com/Ezetowers/goNE/processing"
 )
 
 type PacketMatchingLogic interface {
