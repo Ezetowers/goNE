@@ -6,10 +6,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/ezetowers/goNE/common"
-	"github.com/ezetowers/goNE/ne"
-	"github.com/ezetowers/goNE/processing"
-	"github.com/ezetowers/goNE/receiver"
+	"github.com/Ezetowers/goNE/common"
+	"github.com/Ezetowers/goNE/ne"
+	"github.com/Ezetowers/goNE/processing"
+	"github.com/Ezetowers/goNE/receiver"
 	"github.com/op/go-logging"
 )
 

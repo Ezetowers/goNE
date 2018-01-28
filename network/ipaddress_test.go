@@ -1,4 +1,4 @@
-package net_test
+package network
 
 import (
 	"ne/network"
