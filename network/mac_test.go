@@ -153,8 +153,6 @@ func ExampleMac_Compare_second() {
 	if mac1.Compare(mac2) == 0 {
 		fmt.Println("Macs are equivalents")
 	}
-    // Output:
-    // Macs are equivalents
 }
 
 // Output:
