@@ -9,15 +9,13 @@ type Mac struct {
 	bytes []byte
 }
 
-const MacSize = 6
-
 func NewMac(data []byte) *Mac {
 	mac := &Mac{
-		make([]byte, MacSize),
+		make([]byte, MAC_SIZE),
 	}
 
-	if len(data) < MacSize {
-		Log.Errorf("[MAC] Invalid data received. Actual len: %v. Expected: %v", len(data), MacSize)
+	if len(data) < MAC_SIZE {
+		Log.Errorf("[MAC] Invalid data received. Actual len: %v. Expected: %v", len(data), MAC_SIZE)
 		return nil
 	}
 
@@ -60,18 +58,11 @@ func (self *Mac) Increase() error {
 	return nil
 }
 
-/**
- * @brief Compare the IPMasks.
- *
- * @param      self Self
- * @param      rhs  Mac to compare
- *
- * @return     0  if self == rhs
- * 			   1  if self > rhs
- * 			   -1 if self < rhs
- */
+// Compare every octet of both Macs to determine which if they are the same.
+// The function returns 0 if both macs are equals, 1 if self > rhs and
+// -1 if self < rhs
 func (self *Mac) Compare(rhs *Mac) int8 {
-	for index := 0; index < MacSize; index++ {
+	for index := 0; index < MAC_SIZE; index++ {
 		if self.bytes[index] != rhs.bytes[index] {
 			if self.bytes[index] > rhs.bytes[index] {
 				return 1

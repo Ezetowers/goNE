@@ -10,9 +10,6 @@ type IPAddress struct {
 	ip net.IP
 }
 
-const IPV4_SIZE = 4
-const IPV6_SIZE = 16
-
 func NewIPAddress(data []byte) *IPAddress {
 	ipSize := 0
 
